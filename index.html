@@ -1,0 +1,168 @@
+<html>
+
+<head>
+  <title>Merry Christmas!</title>
+  <link rel="icon" type="image/png" href="/favicon.png" />
+  <style>
+    body {
+      overflow: hidden;
+    }
+
+    canvas {
+      padding-left: 0;
+      padding-right: 0;
+      margin-left: auto;
+      margin-right: auto;
+      display: block;
+    }
+
+    #restaurants {
+      bottom: 10%;
+      display: none;
+      font-family: Verdana;
+      left: 50%;
+      position: fixed;
+      transform: translate(-50%);
+      width: 200px
+    }
+
+    #text {
+      top: 10%;
+      display: none;
+      left: 50%;
+      font-family: Verdana;
+      position: fixed;
+      text-align: center;
+      transform: translate(-50%);
+      width: 700px
+    }
+  </style>
+</head>
+
+<body style="background-color:#baebff">
+
+  <!-- create a canvas -->
+  <canvas id="canvas"></canvas>
+  <div id="text">
+  </div>
+
+  <div id="restaurants">
+    <ol>
+      <li><a href="https://sushi-yoshizumi.myshopify.com/collections/take-out-special">Sushi Yoshizumi</a></li>
+      <li><a href="https://akaisarusf.square.site/?location=11ea891eba32d35c91230cc47a2b63cc">Saru Sushi Bar</a></li>
+    </ol>
+  </div>
+</body>
+
+<script>
+
+  // get the canvas
+  var canvas = document.getElementById('canvas');
+  canvas.addEventListener("mouseup", () => {
+    if (document.getElementById("text").style.display === "block") {
+      return;
+    }
+
+    document.getElementById("text").style.display = "block";
+    let i = 0;
+    const txt = `Merry Christmas Katherine! Even though we didn't get to do anything super exciting these holidays, I'm still looking forward to chilling this Christmas with you. There's definitely nobody better to chill with than the Mochi. You've gotten a lot of experience chilling these past few weeks since you've been bedridden with that nasty wart. Hopefully the new year clears all that up. Since we aren't doing physical presents this year, I thought I would try to put together an interesting sort of "card". Hopefully you approve of the design, I threw it together kind of quickly. I love you the most! Now check out the two restaurants I picked below and see what looks good to you :)`;
+    const speedMs = 30;
+
+    function typeWriter() {
+      console.log("typeWriter");
+      if (i < txt.length) {
+        document.getElementById("text").innerHTML += txt.charAt(i);
+        i++;
+        setTimeout(typeWriter, speedMs);
+      } else {
+        setTimeout(() => document.getElementById("restaurants").style.display = "block", 1000);
+      }
+    }
+
+    typeWriter();
+  });
+  var ctx = canvas.getContext('2d');
+
+  // set dimensions
+  var width = window.innerWidth;
+  var height = window.innerHeight;
+  canvas.width = width;
+  canvas.height = height;
+
+  function drawCircle(color, x, y, radius, fill = true) {
+    ctx.strokeStyle = ctx.fillStyle = color;
+    ctx.beginPath();
+    ctx.arc(x, y, radius, 0, Math.PI * 2, true);
+    ctx.closePath();
+    ctx.stroke();
+    if (fill) {
+      ctx.fill();
+    }
+  }
+
+  function drawLine(color, startX, startY, endX, endY, width) {
+    const oldLineWidth = ctx.lineWidth;
+    ctx.lineWidth = width;
+    ctx.moveTo(startX, startY);
+    ctx.lineTo(endX, endY);
+    ctx.stroke();
+    ctx.lineWidth = oldLineWidth;
+  }
+
+  function drawTriangle(color, x, y, height) {
+    ctx.strokeStyle = ctx.fillStyle = color;
+    ctx.beginPath();
+    ctx.moveTo(x, y);
+    ctx.lineTo(x - height, y - height);
+    ctx.lineTo(x + height, y - height);
+    ctx.fill();
+  }
+
+  function drawRectangle(color, x, y, width, height) {
+    ctx.strokeStyle = ctx.fillStyle = color;
+    ctx.fillRect(x, y, width, height);
+  }
+
+  function offsetX(x) {
+    return x + canvas.width / 2;
+  }
+
+  function offsetY(y) {
+    return y + canvas.height / 4;
+  }
+
+  const drawFunctions = [
+    // arms
+    () => drawLine("#44261c", offsetX(0), offsetY(200), offsetX(-130), offsetY(120), 5),
+    () => drawLine("#44261c", offsetX(0), offsetY(200), offsetX(130), offsetY(120), 5),
+    // draw body
+    () => drawCircle("#fff", offsetX(0), offsetY(350), 100),
+    () => drawCircle("#fff", offsetX(0), offsetY(200), 75),
+    () => drawCircle("#fff", offsetX(0), offsetY(100), 50),
+    // draw eyes
+    () => drawCircle("#000", offsetX(20), offsetY(90), 5),
+    () => drawCircle("#000", offsetX(-20), offsetY(90), 5),
+    // draw buttons
+    () => drawCircle("#000", offsetX(0), offsetY(160), 3),
+    () => drawCircle("#000", offsetX(0), offsetY(200), 3),
+    () => drawCircle("#000", offsetX(0), offsetY(240), 3),
+    // nose
+    () => drawTriangle("#ff8624", offsetX(0), offsetY(110), 7),
+    // hat
+    () => drawRectangle("#555454", offsetX(-40), offsetY(45), 80, 10),
+    () => drawRectangle("#555454", offsetX(-30), offsetY(5), 60, 40),
+  ];
+
+  let index = 0;
+  const interval = setInterval(() => {
+    if (index < drawFunctions.length) {
+      drawFunctions[index]();
+      index = index + 1;
+    } else {
+      clearInterval(interval);
+    }
+  }, 200);
+
+</script>
+
+</html>
